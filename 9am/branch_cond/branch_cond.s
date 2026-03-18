@@ -1,6 +1,6 @@
 .global main
 .func main
-.thumb_func
+//.thumb_func
 
 .data
 .balign 4
