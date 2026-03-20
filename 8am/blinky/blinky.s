@@ -15,15 +15,24 @@ delay:  .word   1000
 .text
 .balign 4
 main:
+    @enable GPIO on pins 4,26,27
     movs    r0, #LED @ #26
     bl gpio_init
+
     movs    r0, #27
     bl gpio_init
+
     movs    r0, #4
     bl gpio_init
+
+    movs    r0, #0
+    bl  gpio_init
+
+    @ set 27, 26 as output
     movs    r0, #3
     lsl r0, #LED
     ldr r1, =gpio_oe
+
     movs    r0, #1
     lsl r0, #LED
     ldr r1, [r1]
@@ -43,7 +52,7 @@ loop:
     ldr r1, =gpio_in
     ldr r1, [r1]
     ldr r0, [r1]
-    lsr r0, #4
+    @ lsr r0, #4 @ don't need for PIR
     lsl r0, #LED
     ldr r1, =gpio_on
     ldr r1, [r1]
