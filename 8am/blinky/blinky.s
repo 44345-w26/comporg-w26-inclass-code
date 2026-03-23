@@ -32,7 +32,7 @@ main:
     movs    r0, #3
     lsl r0, #LED
     ldr r1, =gpio_oe
-
+loop2:
     movs    r0, #1
     lsl r0, #LED
     ldr r1, [r1]
@@ -48,6 +48,8 @@ main:
     ldr r1, =gpio_off
     ldr r1, [r1]
     str r0, [r1]
+    bl sleeptwo
+    b loop2
 loop:
     ldr r1, =gpio_in
     ldr r1, [r1]
@@ -65,3 +67,13 @@ loop:
     ldr r1, [r1]
     str r0, [r1]
     b loop
+
+sleeptwo:
+    push {lr}
+    ldr r0, =delay
+    ldr r0, [r0]
+    bl sleep_ms
+    ldr r0, =delay
+    ldr r0, [r0]
+    bl sleep_ms
+    pop {pc}
