@@ -9,6 +9,8 @@
 gpio_oe:    .word   0xd0000024
 gpio_on:    .word   0xd0000014
 gpio_off:   .word   0xd0000018
+clockfreq: .word   62500000
+tonefreq:   .word   440
 
 .text
 .balign 4
@@ -19,28 +21,42 @@ main:
     ldr r1, =gpio_oe
     ldr r1, [r1]
     str r0, [r1]
+    
+    ldr r0, =tonefreq
+    ldr r0, [r0]
     bl buzz
 
 buzz:
     push {lr}
 forever:
-
-    movs r0, #2
-    movs r4, #0
+    movs r2, #2
     ldr r1, =gpio_on
     ldr r1, [r1]
-    str r0, [r1]
+    str r2, [r1]
+
+    bl delay4freq
+
+    movs r2, #2
     ldr r1, =gpio_off
     ldr r1, [r1]
-    str r0, [r1]
+    str r2, [r1]
 
-    movs r3, #0x3f
-    lsl r3, #2
-delayloop:
-    sub r3, r3, #1
-    nop
-    cmp r3, r4
-    beq delayloop
+    bl delay4freq
 
     b forever
+    pop {pc}
+
+delay4freq:
+    push {lr}
+    @ r0: freq
+    ldr r1,=clockfreq
+    ldr r1,[r1]
+    lsr r1, #3
+delayloop:
+    sub r1, r1, r0
+    cmp r1, r0
+    nop
+    nop
+    nop
+    bge delayloop
     pop {pc}
